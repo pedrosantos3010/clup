@@ -29,6 +29,11 @@ export class TerminalView {
     }
   }
 
+  public showTable(content: string[][], header: string): void {
+    this.showText(header + "\n");
+    terminal.table(content as any);
+  }
+
   public async getInput(params?: {
     successMessage?: string;
     errorMessage?: string;
