@@ -19,7 +19,7 @@ export async function fetchAndSelectOne<T extends SelectableItem>(
 
   const selectedSpace = await terminal.selectItem(
     item!.map((s) => s.name),
-    { header: "space" }
+    { header: label }
   );
 
   return item![selectedSpace.index];
