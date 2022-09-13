@@ -1,4 +1,12 @@
-import { fetchWorkspaces } from "../utils/fetchWorkspaces";
+import path from "path";
+import fs from "fs";
+
+import { fetchAndSelectOne } from "../framework/selectOne";
+import { Config } from "../types";
+import { fetchFolders } from "../utils/fetchFolders";
+import { fetchLists } from "../utils/fetchLists";
+import { fetchSpaces } from "../utils/fetchSpaces";
+import { fetchWorkSpaces } from "../utils/fetchWorkSpaces";
 import { Color } from "../view/Colors";
 import { TerminalView } from "../view/TerminalView";
 
@@ -15,87 +23,70 @@ export function config(terminal: TerminalView) {
     terminal.showText("API_KEY> ", { colorHex: Color.PURPLE });
     const apiKey = await terminal.getInput();
 
-    const workspaces = await terminal.waitAction(fetchWorkspaces(apiKey));
-
-    if (!workspaces) {
-      return terminal.end();
-    }
-
-    const selection = await terminal.selectItem(
-      workspaces.map((w) => w.name),
-      { header: "workspace" }
+    const space = await fetchAndSelectOne(
+      async () => await fetchSpaces(apiKey),
+      terminal,
+      "space"
     );
 
-    console.log("finalizou", workspaces[selection.index]);
+    const workspace = await fetchAndSelectOne(
+      async () => await fetchWorkSpaces(apiKey, space.id),
+      terminal,
+      "workspace"
+    );
+
+    const folder = await fetchAndSelectOne(
+      async () => await fetchFolders(apiKey, workspace.id),
+      terminal,
+      "folder"
+    );
+
+    const list = await fetchAndSelectOne(
+      async () => await fetchLists(apiKey, folder.id),
+      terminal,
+      "list"
+    );
+    const config: Config = {
+      apiKey,
+      workspace,
+      space,
+      folder,
+      list,
+    };
+
+    const CLICKUP_CONFIG = path.join(__dirname, ".clickup");
+    fs.writeFileSync(CLICKUP_CONFIG, JSON.stringify(config));
 
     terminal.end();
   };
 }
 
-//     spinner.start('Fetching spaces')
-//     const spaces = await fetchSpaces(apiKey, workspace.id)
-//     spinner.stop()
-//     const space = await selectItem(spaces, 'space', toolbox)
-
-//     spinner.start('Fetching folders...')
-//     const folders = await fetchFolders(apiKey, space.id)
-//     spinner.stop()
-//     const folder = await selectItem(folders, 'folder', toolbox)
-
-//     const { listOrFolder } = await prompt.ask({
-//       type: 'select',
-//       name: 'listOrFolder',
-//       message: [
-//         'Do you want to filter all tasks by list or by folder?',
-//         '*If you choose folders commands can be a bit slower than using lists',
-//       ].join('\n'),
-//       choices: ['list', 'folder'],
-//     })
-
-//     let selectedLists: ListInfo[] | null = null
-//     if (listOrFolder === 'list') {
-//       spinner.start('Fetching lists...')
-//       const lists = await fetchLists(apiKey, folder.id)
-//       spinner.stop()
-//       selectedLists = await multiSelectItem(lists, 'lists', toolbox)
+//   const getApiKey = async (): Promise<Config> => {
+//     if (clickupConfig) {
+//       return clickupConfig;
 //     }
 
-//     const config: Config = {
-//       apiKey,
-//       workspace,
-//       space,
-//       folder,
-//       lists: selectedLists,
+//     clickupConfig = await readApiKey();
+
+//     if (!clickupConfig) {
+//       throw new Error("You need to run the config command first");
 //     }
 
-//     clickup.saveApiKey(config)
-//     print.success('You are ready to use the clickup CLI')
-//   },
-// }
+//     return clickupConfig;
+//   };
 
-// export default command
+//   const readApiKey = async (): Promise<Config | null> => {
+//     if (!filesystem.exists(CLICKUP_CONFIG)) {
+//       return null;
+//     }
 
-// const multiSelectItem = async <T extends { name: string }>(
-//   itens: Array<T> | null,
-//   itemLabel: string,
-//   { print, prompt }: GluegunToolbox
-// ) => {
-//   if (!itens) {
-//     print.error(`Could not fetch ${itemLabel}`)
-//     exit(-1)
-//   }
+//     try {
+//       return JSON.parse(await filesystem.readAsync(CLICKUP_CONFIG));
+//     } catch (e) {
+//       return null;
+//     }
+//   };
 
-//   const { selection } = await prompt.ask({
-//     type: 'multiselect',
-//     name: 'selection',
-//     message: `Select a ${itemLabel}`,
-//     choices: itens.map((space) => space.name),
-//   })
-
-//   if (!selection) {
-//     print.error(`You need to select a ${itemLabel}`)
-//     exit(-1)
-//   }
-
-//   return itens.filter((item) => selection.includes(item.name))
-// }
+//   const saveApiKey = (config: Config): Promise<void> => {
+//     return filesystem.writeAsync(CLICKUP_CONFIG, JSON.stringify(config));
+//   };

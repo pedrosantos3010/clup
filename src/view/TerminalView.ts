@@ -86,4 +86,9 @@ export class TerminalView {
   public end(): void {
     terminal.processExit(0);
   }
+
+  public endWithError(error: string): void {
+    this.showText(error, { colorHex: Color.RED });
+    terminal.processExit(-1);
+  }
 }
