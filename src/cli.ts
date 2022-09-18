@@ -1,16 +1,20 @@
 import { program } from "commander";
 
-interface CommandOptions<T extends string | boolean = string | boolean> {
+interface CommandOptions {
     shortcut: string;
     name: string;
     description: string;
-    default: T;
+    default: string | boolean;
 }
+
+type CommandOption = Record<string, string | boolean>;
 
 interface Command {
     name: string;
     description: string;
-    action: { exec: (options?: unknown) => Promise<void> };
+    action: {
+        exec: (options: CommandOption) => Promise<void>;
+    };
     options?: Array<CommandOptions>;
 }
 
@@ -32,7 +36,9 @@ export class Cli {
             });
         }
 
-        command.action(async (options?: unknown) => await action.exec(options));
+        command.action(
+            async (options: CommandOption = {}) => await action.exec(options)
+        );
     }
 
     public start(): void {
