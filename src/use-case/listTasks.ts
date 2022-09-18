@@ -3,32 +3,31 @@ import { fetchTasks } from "../utils/fetchTasks";
 import { TerminalView } from "../view/TerminalView";
 
 export function listTasks(terminal: TerminalView) {
-  return async () => {
-    const configService = new ConfigService();
-    const config = await configService.getConfig();
+    return async (): Promise<void> => {
+        const configService = new ConfigService();
+        const config = await configService.getConfig();
 
-    let tasks = await terminal.waitAction(
-      fetchTasks(config.apiKey, config.list.id)
-    );
+        let tasks = await terminal.waitAction(
+            fetchTasks(config.apiKey, config.list.id)
+        );
 
-    if (!tasks) {
-      terminal.endWithError("There is no tasks at " + config.folder.name);
-      return;
-    }
+        if (!tasks) {
+            terminal.endWithError("There is no tasks at " + config.folder.name);
+            return;
+        }
 
-    tasks = tasks.sort((t1, t2) => t2.status.order - t1.status.order);
+        tasks = tasks.sort((t1, t2) => t2.status.order - t1.status.order);
 
-    const tableData = tasks.map((task) => [
-      task.customId || task.id,
-      task.status.name,
-      task.name,
-      task.assignees?.map((a) => a.username).join(", ") || "",
-    ]);
+        const tableData = tasks.map((task) => ({
+            id: { content: task.customId || task.id },
+            status: { content: task.status.name, color: task.status.color },
+            name: { content: task.name },
+            user: {
+                content:
+                    task.assignees?.map((a) => a.username).join(", ") || "",
+            },
+        }));
 
-    const tableHeader = ["id", "status", "name", "user"];
-    terminal.showTable(
-      [tableHeader, ...tableData],
-      "showing list " + config.folder.name
-    );
-  };
+        terminal.showTable(tableData, undefined, config.list.name);
+    };
 }
