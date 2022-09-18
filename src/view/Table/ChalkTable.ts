@@ -16,8 +16,9 @@ export class ChalkTable implements TableView {
         const tableInfo = tableData.map((data) => {
             Object.keys(data).forEach((key) => {
                 let content = data[key].content;
-                if (data[key].color) {
-                    content = chalk.bgHex(data[key].color!)(data[key].content);
+                const color = data[key].color;
+                if (color) {
+                    content = chalk.bgHex(color)(data[key].content);
                 }
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (<any>data[key]) = content;
