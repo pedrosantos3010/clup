@@ -6,7 +6,7 @@ import { fetchSpaces } from "../utils/fetchSpaces";
 import { fetchWorkSpaces } from "../utils/fetchWorkSpaces";
 import { TerminalView } from "../view/TerminalView";
 
-interface Options {
+export interface ChangeListOptions {
     folder?: boolean;
     workspace?: boolean;
     space?: boolean;
@@ -15,7 +15,7 @@ interface Options {
 export class ChangeListUseCase {
     public constructor(private _terminal: TerminalView) {}
 
-    public async exec(options: Options): Promise<void> {
+    public async exec(options: ChangeListOptions): Promise<void> {
         const configService = new ConfigService();
         const config = await configService.getConfig();
 

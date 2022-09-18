@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 import { Cli } from "./cli";
+import { ChangeListCommand } from "./commands/ChangeListCommand";
+import { ConfigCommand } from "./commands/ConfiCommand";
+import { ListTaskCommand } from "./commands/ListTaskCommand";
 import { FeatureFlag, FeatureFlagService } from "./FeatureFlagService";
-import { ChangeListUseCase } from "./use-case/changeList";
-import { config } from "./use-case/config";
-import { listTasks } from "./use-case/listTasks";
 import { Spinner } from "./view/Spinner";
 import { ChalkTable } from "./view/Table/ChalkTable";
 import { TableView } from "./view/Table/TableView";
@@ -31,43 +31,9 @@ const exec = async (): Promise<void> => {
     const spinner = new Spinner();
     const terminal = new TerminalView(tableView, spinner);
 
-    cli.addCommand({
-        name: "config",
-        description: "Configure clup cli with your account",
-        action: { exec: async () => await config(terminal)() },
-    });
-
-    cli.addCommand({
-        name: "ls",
-        description: "list tasks in the current list",
-        action: { exec: async () => await listTasks(terminal)() },
-    });
-
-    cli.addCommand({
-        name: "cd",
-        description: "change current folder and list",
-        action: new ChangeListUseCase(terminal),
-        options: [
-            {
-                shortcut: "-f",
-                name: "--folder",
-                description: "Change folder and list",
-                default: false,
-            },
-            {
-                shortcut: "-w",
-                name: "--workspace",
-                description: "Change workspace, folder and list",
-                default: false,
-            },
-            {
-                shortcut: "-s",
-                name: "--space",
-                description: "Change space, workspace, folder and list",
-                default: false,
-            },
-        ],
-    });
+    cli.addCommand(ConfigCommand.createConfigCommand(terminal));
+    cli.addCommand(ListTaskCommand.createListTaskCommand(terminal));
+    cli.addCommand(ChangeListCommand.createChangeListCommand(terminal));
 
     cli.start();
 };

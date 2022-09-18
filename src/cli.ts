@@ -7,13 +7,11 @@ interface CommandOptions {
     default: string | boolean;
 }
 
-type CommandOption = Record<string, string | boolean>;
-
-interface Command {
+export interface Command<T> {
     name: string;
     description: string;
     action: {
-        exec: (options: CommandOption) => Promise<void>;
+        exec: (options: T) => Promise<void>;
     };
     options?: Array<CommandOptions>;
 }
@@ -23,7 +21,12 @@ export class Cli {
         program.name(name).description(description).version(version);
     }
 
-    public addCommand({ name, description, action, options }: Command): void {
+    public addCommand<T>({
+        name,
+        description,
+        action,
+        options,
+    }: Command<T>): void {
         const command = program.command(name).description(description);
 
         if (options) {
@@ -36,9 +39,7 @@ export class Cli {
             });
         }
 
-        command.action(
-            async (options: CommandOption = {}) => await action.exec(options)
-        );
+        command.action(async (options: T) => await action.exec(options));
     }
 
     public start(): void {

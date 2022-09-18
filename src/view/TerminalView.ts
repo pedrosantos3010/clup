@@ -1,12 +1,9 @@
 import chalk from "chalk";
 import { terminal } from "terminal-kit";
-import { FeatureFlag, FeatureFlagService } from "../FeatureFlagService";
-import { ChalkTable, displayTable } from "./Table/ChalkTable";
 import { Color } from "./Colors";
 import { displayLogo } from "./displayLogo";
 import { Spinner } from "./Spinner";
 import { TableOptions } from "./Table/TableOptions";
-import { TerminalKitTable } from "./Table/TerminalKitTable";
 import { TableView } from "./Table/TableView";
 
 interface ShowTextOptions {

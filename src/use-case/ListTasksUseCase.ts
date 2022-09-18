@@ -2,17 +2,21 @@ import { ConfigService } from "../framework/ConfigService";
 import { fetchTasks } from "../utils/fetchTasks";
 import { TerminalView } from "../view/TerminalView";
 
-export function listTasks(terminal: TerminalView) {
-    return async (): Promise<void> => {
+export class ListTasksUseCase {
+    public constructor(private _terminal: TerminalView) {}
+
+    public async exec(): Promise<void> {
         const configService = new ConfigService();
         const config = await configService.getConfig();
 
-        let tasks = await terminal.waitAction(
+        let tasks = await this._terminal.waitAction(
             fetchTasks(config.apiKey, config.list.id)
         );
 
         if (!tasks) {
-            terminal.endWithError("There is no tasks at " + config.folder.name);
+            this._terminal.endWithError(
+                "There is no tasks at " + config.folder.name
+            );
             return;
         }
 
@@ -28,6 +32,6 @@ export function listTasks(terminal: TerminalView) {
             },
         }));
 
-        terminal.showTable(tableData, undefined, config.list.name);
-    };
+        this._terminal.showTable(tableData, undefined, config.list.name);
+    }
 }
