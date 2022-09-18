@@ -2,7 +2,7 @@ import chalk from "chalk";
 import { terminal } from "terminal-kit";
 import { Color } from "./Colors";
 import { displayLogo } from "./displayLogo";
-import { Spinner } from "./Spinner";
+import { Spinner } from "./Spinner/Spinner";
 import { TableOptions } from "./Table/TableOptions";
 import { TableView } from "./Table/TableView";
 

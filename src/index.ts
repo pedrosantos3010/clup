@@ -2,10 +2,10 @@
 
 import { Cli } from "./cli";
 import { ChangeListCommand } from "./commands/ChangeListCommand";
-import { ConfigCommand } from "./commands/ConfiCommand";
+import { ConfigCommand } from "./commands/ConfigCommand";
 import { ListTaskCommand } from "./commands/ListTaskCommand";
 import { FeatureFlag, FeatureFlagService } from "./FeatureFlagService";
-import { Spinner } from "./view/Spinner";
+import { TerminalKitSpinner } from "./view/Spinner/TerminalKitSpinner";
 import { ChalkTable } from "./view/Table/ChalkTable";
 import { TableView } from "./view/Table/TableView";
 import { TerminalKitTable } from "./view/Table/TerminalKitTable";
@@ -28,7 +28,7 @@ const exec = async (): Promise<void> => {
         tableView = new TerminalKitTable(allowTermKitColors);
     }
 
-    const spinner = new Spinner();
+    const spinner = new TerminalKitSpinner();
     const terminal = new TerminalView(tableView, spinner);
 
     cli.addCommand(ConfigCommand.createConfigCommand(terminal));
