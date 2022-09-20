@@ -1,4 +1,5 @@
 import { program } from "commander";
+import { createBanner } from "./view/Banner";
 
 interface CommandOptions {
     shortcut: string;
@@ -19,6 +20,8 @@ export interface Command<T> {
 export class Cli {
     public constructor(name: string, description: string, version: string) {
         program.name(name).description(description).version(version);
+
+        program.addHelpText("beforeAll", createBanner());
     }
 
     public addCommand<T>({

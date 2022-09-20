@@ -11,11 +11,11 @@ export const fetchTasks = async (
     apiKey: string,
     listId: string,
     options?: FetchTasksOptions
-): Promise<TaskInfo[] | null> => {
+): Promise<TaskInfo[] | undefined> => {
     const params = getParams(options);
     const url = `${CLICKUP_BASE_URL}/list/${listId}/task?${params}`;
 
-    const result = (await request(url, apiKey)) as { data: ClickupTasks };
+    const result = await request<ClickupTasks>(url, apiKey);
 
     const tasks = result?.data?.tasks?.map(
         (task): TaskInfo => ({
