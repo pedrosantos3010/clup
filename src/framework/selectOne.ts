@@ -7,7 +7,7 @@ type SelectableItem = {
 };
 
 export async function fetchAndSelectOne<T extends SelectableItem>(
-    fetch: () => Promise<T[] | null>,
+    fetch: () => Promise<T[] | undefined>,
     terminal: TerminalView,
     label: string
 ): Promise<T> {
