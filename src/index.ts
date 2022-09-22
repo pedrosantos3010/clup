@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { terminal } from "terminal-kit";
 import { Cli } from "./cli";
 import { ChangeListCommand } from "./commands/ChangeListCommand";
 import { ConfigCommand } from "./commands/ConfigCommand";
@@ -38,3 +39,14 @@ const exec = async (): Promise<void> => {
     cli.start();
 };
 exec();
+
+const handleErrors = (error: unknown): void => {
+    terminal.red("process finished unexpectedly");
+    if (process.env.VERBOSE) {
+        console.error(error);
+    }
+    terminal.processExit(-1);
+    process.exit(-1);
+};
+process.on("uncaughtException", handleErrors);
+process.on("uncaughtException", handleErrors);

@@ -19,9 +19,13 @@ export async function fetchAndSelectOne<T extends SelectableItem>(
     }
 
     const selectedSpace = await terminal.selectItem(
-        item.map((s) => s.name),
+        [...item.map((s) => s.name), "go back"],
         { header: label }
     );
+
+    if (selectedSpace.index === item.length) {
+        throw new Error("Need go back");
+    }
 
     return item[selectedSpace.index];
 }
