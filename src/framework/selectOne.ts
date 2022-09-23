@@ -24,6 +24,7 @@ export async function fetchAndSelectOne<T extends SelectableItem>(
     );
 
     if (selectedSpace.index === item.length) {
+        // TODO: improve go back function
         throw new Error("Need go back");
     }
 

@@ -20,10 +20,18 @@ export interface TaskInfo {
 
 export interface Config {
     apiKey: string;
+    userInfo: ClickupUser;
     workspace: { id: string; name: string };
     space: { id: string; name: string };
     folder: { id: string; name: string };
     list: { id: string; name: string }; //Array<{ id: string; name: string }> | null
+}
+
+export interface ClickupUser {
+    id: number;
+    color: string;
+    username: string;
+    profilePicture: string;
 }
 
 export interface FolderInfo {

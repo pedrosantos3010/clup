@@ -110,6 +110,7 @@ export class TerminalView {
         await this.stopSpinner();
         return result;
     }
+
     public async startSpinner(): Promise<void> {
         await this._spinner.start();
     }
