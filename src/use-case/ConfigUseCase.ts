@@ -4,6 +4,7 @@ import { Config } from "../types";
 import { fetchFolders } from "../utils/fetchFolders";
 import { fetchLists } from "../utils/fetchLists";
 import { fetchSpaces } from "../utils/fetchSpaces";
+import { fetchUserInfo } from "../utils/fetchUserInfo";
 import { fetchWorkSpaces } from "../utils/fetchWorkSpaces";
 import { Color } from "../view/Colors";
 import { TerminalView } from "../view/TerminalView";
@@ -22,6 +23,17 @@ export class ConfigUseCase {
         this._terminal.showText(API_MESSAGE);
         this._terminal.showText("API_KEY> ", { colorHex: Color.PURPLE });
         const apiKey = await this._terminal.getInput();
+
+        const userInfo = await this._terminal.waitAction(fetchUserInfo(apiKey));
+
+        if (!userInfo) {
+            this._terminal.endWithError("could not fetch user data");
+            return;
+        }
+
+        this._terminal.showText("Welcome " + userInfo.username, {
+            colorHex: userInfo.color as Color,
+        });
 
         const space = await fetchAndSelectOne(
             async () => await fetchSpaces(apiKey),
@@ -47,11 +59,12 @@ export class ConfigUseCase {
             "list"
         );
         const config: Config = {
-            apiKey,
-            workspace,
-            space,
-            folder,
             list,
+            folder,
+            space,
+            workspace,
+            userInfo,
+            apiKey,
         };
         const configService = new ConfigService();
         configService.saveConfigFile(config);

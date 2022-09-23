@@ -3,8 +3,8 @@ import { TaskInfo, UserInfo } from "../types";
 import { request } from "./fetch";
 
 interface FetchTasksOptions {
-    includesSubtasks: boolean;
-    assignee: string;
+    includesSubtasks?: boolean;
+    assignee?: number[];
 }
 
 export const fetchTasks = async (
@@ -45,7 +45,9 @@ function getParams(options?: FetchTasksOptions): string {
         params += "includesubtasks=true";
     }
     if (options?.assignee) {
-        params += `assignees%5B%5D=${options?.assignee}`;
+        options.assignee.forEach((assignee) => {
+            params += `assignees[]=${assignee}`;
+        });
     }
     return params;
 }
