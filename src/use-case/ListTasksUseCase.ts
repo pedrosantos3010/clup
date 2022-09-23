@@ -2,15 +2,26 @@ import { ConfigService } from "../framework/ConfigService";
 import { fetchTasks } from "../utils/fetchTasks";
 import { TerminalView } from "../view/TerminalView";
 
+export interface ListUseCaseOptions {
+    meMode: string;
+}
+
 export class ListTasksUseCase {
     public constructor(private _terminal: TerminalView) {}
 
-    public async exec(): Promise<void> {
+    public async exec(options: ListUseCaseOptions): Promise<void> {
         const configService = new ConfigService();
         const config = await configService.getConfig();
 
+        let assignees: number[] | undefined;
+        if (options.meMode) {
+            assignees = [config.userInfo.id];
+        }
+
         let tasks = await this._terminal.waitAction(
-            fetchTasks(config.apiKey, config.list.id)
+            fetchTasks(config.apiKey, config.list.id, {
+                assignee: assignees,
+            })
         );
 
         if (!tasks) {
