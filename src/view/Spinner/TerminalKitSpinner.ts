@@ -4,7 +4,7 @@ export class TerminalKitSpinner {
     private spinner?: Terminal.AnimatedText;
 
     public async start(): Promise<void> {
-        terminal.insertLine(1);
+        terminal("\n");
         const spinner = await terminal.spinner({
             animation: "impulse",
         });
