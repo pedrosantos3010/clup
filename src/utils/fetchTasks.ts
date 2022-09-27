@@ -42,7 +42,7 @@ export const fetchTasks = async (
 function getParams(options?: FetchTasksOptions): string {
     let params = "";
     if (options?.includeSubtasks) {
-        params += "subtasksg=true";
+        params += "subtasks=true";
     }
     if (options?.assignee) {
         options.assignee.forEach((assignee) => {
