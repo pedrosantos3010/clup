@@ -4,6 +4,7 @@ import { TerminalView } from "../view/TerminalView";
 
 export interface ListUseCaseOptions {
     meMode: string;
+    includeSubtasks: boolean;
 }
 
 export class ListTasksUseCase {
@@ -21,6 +22,7 @@ export class ListTasksUseCase {
         let tasks = await this._terminal.waitAction(
             fetchTasks(config.apiKey, config.list.id, {
                 assignee: assignees,
+                includeSubtasks: options.includeSubtasks,
             })
         );
 
