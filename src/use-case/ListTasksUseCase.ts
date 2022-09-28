@@ -3,16 +3,18 @@ import { fetchTasks } from "../utils/fetchTasks";
 import { TerminalView } from "../view/TerminalView";
 
 export interface ListUseCaseOptions {
-    meMode: string;
-    includeSubtasks: boolean;
+    meMode?: string;
+    includeSubtasks?: boolean;
 }
 
 export class ListTasksUseCase {
-    public constructor(private _terminal: TerminalView) {}
+    public constructor(
+        private _terminal: TerminalView,
+        private _configService: ConfigService
+    ) {}
 
     public async exec(options: ListUseCaseOptions): Promise<void> {
-        const configService = new ConfigService();
-        const config = await configService.getConfig();
+        const config = await this._configService.getConfig();
 
         let assignees: number[] | undefined;
         if (options.meMode) {
