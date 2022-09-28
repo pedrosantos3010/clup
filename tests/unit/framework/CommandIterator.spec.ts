@@ -13,7 +13,10 @@ describe("CommandIterator", () => {
         expect(sut.currentCommandIndex).toBe(1);
 
         sut.goToNext();
-        expect(sut.currentCommandIndex).toBe(1);
+        expect(sut.currentCommandIndex).toBe(2);
+
+        sut.goToNext();
+        expect(sut.currentCommandIndex).toBe(2);
     });
 
     it("should be able to go to the previous command", async () => {
@@ -25,6 +28,9 @@ describe("CommandIterator", () => {
         sut.goToNext();
         sut.goToNext();
 
+        expect(sut.currentCommandIndex).toBe(2);
+
+        sut.goToPrevious();
         expect(sut.currentCommandIndex).toBe(1);
 
         sut.goToPrevious();
@@ -44,7 +50,7 @@ describe("CommandIterator", () => {
         sut.goToNext();
         expect(await sut.executeCurrent()).toBe("secondCommand");
         sut.goToNext();
-        expect(await sut.executeCurrent()).toBe("secondCommand");
+        expect(await sut.executeCurrent()).toBe(undefined);
     });
 
     // it("should be able to execute all commands until the end", async () => {
