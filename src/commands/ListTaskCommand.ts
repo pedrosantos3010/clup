@@ -20,6 +20,12 @@ export class ListTaskCommand {
                     description: "shows only tasks that was your assignee",
                     default: false,
                 },
+                {
+                    shortcut: "-i",
+                    name: "--include-subtasks",
+                    description: "also shows subtasks",
+                    default: false,
+                },  
             ],
         };
     }
