@@ -6,6 +6,7 @@ import { ChangeListCommand } from "./commands/ChangeListCommand";
 import { ConfigCommand } from "./commands/ConfigCommand";
 import { ListTaskCommand } from "./commands/ListTaskCommand";
 import { FeatureFlag, FeatureFlagService } from "./FeatureFlagService";
+import { ConfigService } from "./framework/ConfigService";
 import { TerminalKitSpinner } from "./view/Spinner/TerminalKitSpinner";
 import { ChalkTable } from "./view/Table/ChalkTable";
 import { TableView } from "./view/Table/TableView";
@@ -32,8 +33,12 @@ const exec = async (): Promise<void> => {
     const spinner = new TerminalKitSpinner();
     const terminal = new TerminalView(tableView, spinner);
 
+    const configService = new ConfigService();
+
     cli.addCommand(ConfigCommand.createConfigCommand(terminal));
-    cli.addCommand(ListTaskCommand.createListTaskCommand(terminal));
+    cli.addCommand(
+        ListTaskCommand.createListTaskCommand(terminal, configService)
+    );
     cli.addCommand(ChangeListCommand.createChangeListCommand(terminal));
 
     cli.start();
