@@ -1,6 +1,8 @@
 import { ListTasksUseCase } from "../../../src/use-case/ListTasksUseCase";
 import { TerminalView } from "../../../src/view/TerminalView";
 
+jest.mock("../../../src/utils/fetchTasks");
+
 describe("ListTasksUseCase", () => {
     it("should end with error if there is no tasks", async () => {
         const fakeTerminalView = {
